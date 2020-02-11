@@ -1,0 +1,262 @@
+// main
+import 'package:flutter/material.dart';
+
+import 'package:Shrine/app.dart';
+
+void main() => runApp(ShrineApp());
+
+//Login
+import 'package:flutter/material.dart';
+import 'colors.dart';
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // TODO: Add text editing controllers (101)
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          children: <Widget>[
+            SizedBox(height: 80.0),
+            Column(
+              children: <Widget>[
+                Image.asset(
+                  'assets/diamond.png',
+                  color: kShrineBlack, // New code
+                ),
+                SizedBox(height: 16.0),
+                Text('SHRINE'),
+              ],
+            ),
+            SizedBox(height: 120.0),
+            // TODO: Wrap Username with AccentColorOverride (103)
+            // TODO: Remove filled: true values (103)
+            // TODO: Wrap Password with AccentColorOverride (103)
+            // TODO: Add TextField widgets (101)
+            // [Name]
+            AccentColorOverride(
+              color: kShrineBrown900,
+              child: TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                ),
+              ),
+            ),
+            SizedBox(height: 12.0),
+            AccentColorOverride(
+              color: kShrineBrown900,
+              child: TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                ),
+              ),
+            ),
+            // TODO: Add button bar (101)
+            ButtonBar(
+              // TODO: Add a beveled rectangular border to CANCEL (103)
+              children: <Widget>[
+                // TODO: Add buttons (101)
+                FlatButton(
+                  child: Text('CANCEL'),
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                  ),
+                  onPressed: () {
+                    _usernameController.clear();
+                    _passwordController.clear();
+                  },
+                ),
+                // TODO: Add an elevation to NEXT (103)
+                // TODO: Add a beveled rectangular border to NEXT (103)
+                RaisedButton(
+                  child: Text('NEXT'),
+                  elevation: 8.0,
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                  ),
+                  onPressed: () {
+                    // TODO: Show the next page (101)
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// TODO: Add AccentColorOverride (103)
+class AccentColorOverride extends StatelessWidget {
+  const AccentColorOverride({Key key, this.color, this.child})
+      : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      child: child,
+      data: Theme.of(context).copyWith(
+        accentColor: color,
+        brightness: Brightness.dark,
+      ),
+    );
+  }
+}
+
+//home
+import 'package:flutter/material.dart';
+
+import 'model/products_repository.dart';
+import 'model/product.dart';
+import 'supplemental/asymmetric_view.dart';
+
+class HomePage extends StatelessWidget {
+  // TODO: Add a variable for Category (104)
+
+  @override
+  Widget build(BuildContext context) {
+  // TODO: Return an AsymmetricView (104)
+  // TODO: Pass Category variable to AsymmetricView (104)
+    return Scaffold(
+      appBar: AppBar(
+      brightness: Brightness.dark,
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            print('Menu button');
+          },
+        ),
+        title: Text('SHRINE'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              print('Search button');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.tune),
+            onPressed: () {
+              print('Filter button');
+            },
+          ),
+        ],
+      ),
+      body: AsymmetricView(products: ProductsRepository.loadProducts(Category.all)),
+    );
+  }
+}
+
+//colors
+
+import 'package:flutter/material.dart';
+
+const kShrinePink50 = const Color(0xFFFEEAE6);
+const kShrinePink100 = const Color(0xFFFEDBD0);
+const kShrinePink300 = const Color(0xFFFBB8AC);
+const kShrinePink400 = const Color(0xFFEAA4A4);
+
+const kShrineBrown900 = const Color(0xFF442B2D);
+
+const kShrineErrorRed = const Color(0xFFC5032B);
+
+const kShrineSurfaceWhite = const Color(0xFFFFFBFA);
+const kShrineBackgroundWhite = Colors.white;
+
+const kShrinePurple = Color(0xFF5D1049);
+const kShrineBlack = Color(0xFF000000);
+
+//app
+import 'package:flutter/material.dart';
+
+import 'home.dart';
+import 'login.dart';
+import 'colors.dart';
+
+import 'supplemental/cut_corners_border.dart';
+
+// TODO: Convert ShrineApp to stateful widget (104)
+class ShrineApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Shrine',
+      // TODO: Change home: to a Backdrop with a HomePage frontLayer (104)
+      home: HomePage(),
+      // TODO: Make currentCategory field take _currentCategory (104)
+      // TODO: Pass _currentCategory for frontLayer (104)
+      // TODO: Change backLayer field value to CategoryMenuPage (104)
+      initialRoute: '/login',
+      onGenerateRoute: _getRoute,
+      // TODO: Add a theme (103)
+      theme: _kShrineTheme,
+    );
+  }
+
+  Route<dynamic> _getRoute(RouteSettings settings) {
+    if (settings.name != '/login') {
+      return null;
+    }
+
+    return MaterialPageRoute<void>(
+      settings: settings,
+      builder: (BuildContext context) => LoginPage(),
+      fullscreenDialog: true,
+    );
+  }
+}
+
+// TODO: Build a Shrine Theme (103)
+final ThemeData _kShrineTheme = _buildShrineTheme();
+
+ThemeData _buildShrineTheme() {
+  final ThemeData base = ThemeData.light();
+  return base.copyWith(
+    primaryColor: kShrinePurple,
+    buttonTheme: base.buttonTheme.copyWith(
+        buttonColor: kShrinePurple,
+        textTheme: ButtonTextTheme.primary,
+        colorScheme: ColorScheme.light().copyWith(primary: kShrinePurple)),
+    scaffoldBackgroundColor: kShrineSurfaceWhite,
+    textTheme: _buildShrineTextTheme(base.textTheme),
+    primaryTextTheme: _buildShrineTextTheme(base.primaryTextTheme),
+    accentTextTheme: _buildShrineTextTheme(base.accentTextTheme),
+    primaryIconTheme: base.iconTheme.copyWith(color: kShrineSurfaceWhite),
+    inputDecorationTheme: InputDecorationTheme(
+      border: CutCornersBorder(),
+    ),
+  );
+}
+
+TextTheme _buildShrineTextTheme(TextTheme base) {
+  return base
+      .copyWith(
+        headline: base.headline.copyWith(
+          fontWeight: FontWeight.w500,
+        ),
+        title: base.title.copyWith(fontSize: 18.0),
+        caption: base.caption.copyWith(
+          fontWeight: FontWeight.w400,
+          fontSize: 14.0,
+        ),
+      )
+      .apply(
+        fontFamily: 'Raleway',
+      );
+}
